@@ -52,7 +52,7 @@ class Methods():
         if self.opt.hook == 'bn':
             self.hooks = get_bn_hooks(self.model, self.opt.model_name)
         elif self.opt.hook == 'before_head':
-            self.hooks = get_beforehead_hooks(self.model, self.opt.model_name)
+            self.hooks = get_beforehead_hooks(self.model, self.opt.model_name, self.opt.cal_method)
         
         self.model.eval()
         start_time = time.time()

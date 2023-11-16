@@ -62,25 +62,17 @@ def get_bn_hooks(net, model_name):
                 bn_hooks.append(Grad_all_hook(module))
     return bn_hooks
 
-def get_beforehead_hooks(net, model_name):
+def get_beforehead_hooks(net, model_name, cal_method=''):
     beforehead_hooks = []
     module_list = []
     if model_name in['resnet34', 'resnet18', 'resnet50']:
-        # for module in net.modules():
-            # if isinstance(module, nn.BatchNorm2d):
-            #     module_list.append(module)
         for module in net.layer3.modules():
             if isinstance(module, nn.BatchNorm2d):
                 module_list.append(module)
         for module in net.layer4.modules():
             if isinstance(module, nn.BatchNorm2d):
                 module_list.append(module)
-        # module_list.append(net.layer4)
-    # elif model_name in ['resnet50']:
-    #     for module in net.layer4.modules():
-    #         if isinstance(module, nn.BatchNorm2d):
-    #             module_list.append(module)
-    #     module_list.append(net.layer4)
+        module_list.append(net.layer4)
     elif model_name in ['wrn_40_2']:
         for module in net.modules():
             if isinstance(module, nn.BatchNorm2d):
@@ -92,17 +84,14 @@ def get_beforehead_hooks(net, model_name):
                 module_list.append(module)
         module_list.append(net.pool4)
     elif model_name in ['BiT-S-R101x1', 'BiT-M-R152x2']:
-        # for module in net.body.modules():
-            # if isinstance(module, nn.GroupNorm):
-            #     module_list.append(module)
-        # for module in net.body.block3.modules():
-        #     if isinstance(module, nn.GroupNorm):
-        #         module_list.append(module)
         for module in net.body.block4.modules():
             if isinstance(module, nn.GroupNorm):
                 module_list.append(module)
-        module_list.append(net.before_head.gn)
-        module_list.append(net.before_head)
+        if cal_method == 'cal_grad_value':
+            module_list.append(net.before_head)
+        else:
+            module_list.append(net.before_head.gn)
+        
     elif model_name in ['BiT-M-R50x1']:
         for module in net.body.modules():
             if isinstance(module, nn.GroupNorm):

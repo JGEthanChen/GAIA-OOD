@@ -16,16 +16,16 @@ def get_datasets(args):
             transforms.ToTensor(),
             normalize
         ])
-        ood_name = ['svhn',  'lsun_c',  'tinyimagenet_c',  'places', 'textures']
+        ood_name = ['svhn',  'lsun',  'tinyimagenet',  'places', 'textures']
         in_test = torch.utils.data.DataLoader(torchvision.datasets.CIFAR10(args.data_dir, train=False, transform=transform), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
         svhn = torch.utils.data.DataLoader(torchvision.datasets.SVHN(args.data_dir, split='test', transform=transform),
                                                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
 
-        lsun_c = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'LSUN'),
+        lsun = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'LSUN'),
                                                                                         transform=transform),
                                                                                         batch_size=args.batch_size, num_workers=args.num_workers)
 
-        tinyimagenet_c = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'Imagenet'),
+        tinyimagenet = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'Imagenet'),
                                                                                                 transform=transform),
                                                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
 
@@ -36,7 +36,7 @@ def get_datasets(args):
         textures = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'textures/images'),
                                                                                                 transform=transform),
                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
-        ood_datasets = [svhn,  lsun_c,  tinyimagenet_c,  places, textures]
+        ood_datasets = [svhn,  lsun,  tinyimagenet,  places, textures]
     elif args.dataset == 'cifar100':
         args.num_classes = num_class = 100
         normalize = transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
@@ -46,18 +46,18 @@ def get_datasets(args):
             normalize
         ])
 
-        ood_name = ['svhn',  'lsun_c',  'tinyimagenet_c',   'places', 'textures']
+        ood_name = ['svhn',  'lsun',  'tinyimagenet',   'places', 'textures']
 
         in_test = torch.utils.data.DataLoader(torchvision.datasets.CIFAR100(args.data_dir, train=False, transform=transform), batch_size=args.batch_size, num_workers=args.num_workers)
         svhn = torch.utils.data.DataLoader(torchvision.datasets.SVHN(args.data_dir, split='test', transform=transform),
                                                 batch_size=args.batch_size, num_workers=args.num_workers)
 
-        lsun_c = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'LSUN'),
+        lsun = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'LSUN'),
                                                                                         transform=transform),
                                                         batch_size=args.batch_size, num_workers=args.num_workers)
 
 
-        tinyimagenet_c = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'Imagenet'),
+        tinyimagenet = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'Imagenet'),
                                                                                                 transform=transform),
                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
 
@@ -68,7 +68,7 @@ def get_datasets(args):
         textures = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'textures/images'),
                                                                                                 transform=transform),
                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
-        ood_datasets = [svhn,  lsun_c,  tinyimagenet_c,  places, textures]
+        ood_datasets = [svhn,  lsun,  tinyimagenet,  places, textures]
 
     elif args.dataset == 'imagenet':
         args.num_classes = num_class = 1000
@@ -80,7 +80,7 @@ def get_datasets(args):
             normalize
         ])
         
-        ood_name = ['places', 'textures', 'sun', 'iNaturalist']
+        ood_name = ['iNaturalist', 'textures',  'sun', 'places']
         in_test = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'imagenet', 'val'),
                                                                                             transform=transform),
                                                             batch_size=args.batch_size, num_workers=args.num_workers)
@@ -100,6 +100,6 @@ def get_datasets(args):
         iNaturalist = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(os.path.join(args.data_dir, 'iNaturalist'),
                                                                                                 transform=transform),
                                                                 batch_size=args.batch_size, num_workers=args.num_workers)
-        ood_datasets = [places, textures, sun, iNaturalist]
+        ood_datasets = [iNaturalist, textures, sun, places] 
     print("data load over")
     return in_test, ood_datasets, ood_name

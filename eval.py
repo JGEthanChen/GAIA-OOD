@@ -26,14 +26,14 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-dataset', type=str, help='Optional ID dataset: cifar10 | cifar100 | imagenet', default='cifar10')
-parser.add_argument('-model_arch', type=str, help='Optional model: resnet | resnetv2 | wresnet | wresnet', default='resnet')
-parser.add_argument('-model_name', type=str, help='Optional model: resnet34 | BiT-S-R101x1 | wrn_40_2', default='resnet34')
+parser.add_argument('-model_arch', type=str, help='Optional model: resnet | wresnet | resnetv2', default='resnet')
+parser.add_argument('-model_name', type=str, help='Optional model: resnet34 | wrn_40_2 | BiT-S-R101x1', default='resnet34')
 parser.add_argument('-cal_method', type=str, 
-                    help='Optional method: cal_zero|cal_grad_value', 
-                    default='cal_zero')
+                    help='Optional method: cal_grad_value | cal_zero', 
+                    default='cal_grad_value')
 parser.add_argument('-hook', type=str, help='hook type', default='bn')
 parser.add_argument('-score', type=str, help='score method', default='GAIA')
-parser.add_argument('-data_dir', type=str, help='Data load path', default='/home/ljj/data')
+parser.add_argument('-data_dir', type=str, help='Data load path', default='./data')
 parser.add_argument('-model_path', type=str, help='Model load path', default='./checkpoint/models/cifar10_resnet34.pth')
 parser.add_argument('-save_dir', type=str, help='Data save path', default='./checkpoint/records/')
 

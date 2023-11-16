@@ -8,23 +8,18 @@ def get_square(gradients):
     var = gradients.mean(dim=(-1))
     return var
 
-def cal_score_msp(model, inputs, device=None, hooks=None):
-    logits = model(inputs)
-    conf, _ = torch.max((logits), dim=-1)
-    return -conf.detach()
 
-def cal_zero(net, input, device=None, hooks=None, p=2):
+def cal_zero(net, input, device=None, hooks=None):
     net.zero_grad()
     y = net(input)
     y.max(dim=1).values.sum().backward()
-    # y.sum().backward()
     gradients = [hook.data for hook in hooks]
     gradients = [torch.where(grad != 0, torch.ones_like(grad), torch.zeros_like(grad)) for grad in gradients]
     scores = [grad.mean(dim=(-1, -2)) for grad in gradients]
     square_scores = get_square(scores)
     return square_scores
 
-def cal_grad_value(net, input, device, hooks=None, p=2):
+def cal_grad_value(net, input, device, hooks=None):
     net.zero_grad()
     y = net(input)
     logsoftmax = torch.nn.LogSoftmax(dim=-1).cuda()
