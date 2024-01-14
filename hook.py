@@ -62,7 +62,7 @@ def get_bn_hooks(net, model_name):
                 bn_hooks.append(Grad_all_hook(module))
     return bn_hooks
 
-def get_beforehead_hooks(net, model_name, cal_method=''):
+def get_beforehead_hooks(net, model_name, cal_method='', dataset=''):
     beforehead_hooks = []
     module_list = []
     if model_name in['resnet34', 'resnet18', 'resnet50']:
@@ -87,7 +87,7 @@ def get_beforehead_hooks(net, model_name, cal_method=''):
         for module in net.body.block4.modules():
             if isinstance(module, nn.GroupNorm):
                 module_list.append(module)
-        if cal_method == 'cal_grad_value':
+        if cal_method == 'cal_grad_value' or dataset != 'textures':
             module_list.append(net.before_head)
         else:
             module_list.append(net.before_head.gn)

@@ -122,6 +122,7 @@ This repo is based on [ODIN](https://github.com/facebookresearch/odin) and [Grad
 
 If you find our work useful, please cite as
 
+
 ```
 @inproceedings{chen2023gaia,
   title={GAIA: Delving into Gradient-based Attribution Abnormality for Out-of-distribution Detection},

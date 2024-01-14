@@ -6,7 +6,7 @@ import torch.nn as nn
 from networks import resnet
 from networks import resnetv2
 from networks import wresnet
-from metrics import cal_metric, print_all_results
+from metrics import cal_metric, print_results, print_all_results
 import time
 from collections import OrderedDict
 from cal_method import *
@@ -40,48 +40,50 @@ class Methods():
         self.KNOWN_METHODS = OrderedDict([
             ('cal_zero', lambda *a, **kw: cal_zero(*a, **kw)),
             ('cal_grad_value', lambda *a, **kw: cal_grad_value(*a, **kw)),
-            ('cal_score_msp', lambda *a, **kw: cal_score_msp(*a, **kw)),
         ])
         
-    def cal_score(self, data, device):
-        return self.KNOWN_METHODS[self.opt.cal_method](self.model, data, device, self.hooks)
-    
+        
+    def cal_score(self, device, dataset, hooks, dataset_name=''):       
+        score = torch.tensor([], device=device)
+        for data,_ in dataset:
+            data = data.to(device)
+            score = torch.cat([score, -self.KNOWN_METHODS[self.opt.cal_method](self.model, data, device, hooks)], 0)
+        return score
+
+    def get_score(self, id_dataset, ood_dataset, ood_name, device):
+        
+        if self.opt.hook == 'bn':
+            hooks = get_bn_hooks(self.model, self.opt.model_name)
+        elif self.opt.hook == 'before_head':
+            hooks = get_beforehead_hooks(self.model, self.opt.model_name, self.opt.cal_method, ood_name)
+            
+        start_time = time.time()
+        print('compute in-distribution dataset...') 
+        know = self.cal_score(device, id_dataset, hooks, 'id_dataset')
+        know = know.cpu().numpy()
+        
+        print('compute ood dataset '+ood_name+'...')
+        novel = self.cal_score(device, ood_dataset, hooks, ood_name)
+        novel = np.array(novel.cpu().tolist())
+        
+        end_time = time.time()
+        result = cal_metric(know, novel)
+        
+        print('process result '+ood_name+' total images num: '+str(len(know) + len(novel))+'...')
+        print('Computation cost: '+ str((end_time-start_time)/3600) + ' h')
+        
+        print_results(result, ood_name, "ours")
+        return result
+        
+        
+        
     def get_scores(self, id_dataset, ood_name, ood_datasets):
         device = self.device
-        self.hooks = None
-        if self.opt.hook == 'bn':
-            self.hooks = get_bn_hooks(self.model, self.opt.model_name)
-        elif self.opt.hook == 'before_head':
-            self.hooks = get_beforehead_hooks(self.model, self.opt.model_name, self.opt.cal_method)
-        
+
         self.model.eval()
-        start_time = time.time()
-
-        print('compute in-distribution dataset')    
-        know = torch.tensor([], device=device)
-        for data,_ in id_dataset:
-            data = data.to(device)
-            know = torch.cat([know, -self.cal_score(data, device)], 0)
-        
-        print('compute ood datasets')
-        novels = []
-        for idx_ood in range(len(ood_name)):
-            novel = torch.tensor([], device=device)
-            print('process '+ ood_name[idx_ood])
-            for data,_ in ood_datasets[idx_ood]:
-                data = data.to(device)
-                novel = torch.cat([novel, -self.cal_score(data, device)], 0)
-            novels.append(novel.cpu().tolist())
-
-        
         results = []
-        know = know.cpu().numpy()
-        end_time = time.time()
-        print('Computation cost: '+ str((end_time-start_time)/3600) + ' h')
-
-        for i, novel in enumerate(novels):
-            print('Process OOD '+ood_name[i]+' Scores...')
-            result = cal_metric(know, np.array(novel))
+        for idx_ood in range(len(ood_name)):
+            result = self.get_score(id_dataset, ood_datasets[idx_ood], ood_name[idx_ood], device)
             results.append(result)
-
+        
         print_all_results(results, ood_name, "ours")

@@ -100,12 +100,10 @@ def get_curve(known, novel, method=None):
 
     return tp, fp, fpr_at_tpr95
 
-def print_results(results, in_dataset, out_dataset, name, method):
+def print_results(results, out_dataset, method):
     mtypes = ['FPR', 'DTERR', 'AUROC', 'AUIN', 'AUOUT']
 
-    print('in_distribution: ' + in_dataset)
     print('out_distribution: '+ out_dataset)
-    print('Model Name: ' + name)
     print('')
 
     print(' OOD detection method: ' + method)
