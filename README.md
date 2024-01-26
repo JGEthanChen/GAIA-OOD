@@ -2,7 +2,7 @@
 
 Code for NeurIPS2023 paper "**GAIA: Delving into Gradient-based Attribution Abnormality for Out-of-distribution Detection**" .
 
-[Paper](https://arxiv.org/pdf/2311.09620.pdf)
+[[Paper Link](https://arxiv.org/pdf/2311.09620.pdf)]
 
 ## Preparation
 
