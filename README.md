@@ -124,11 +124,12 @@ If you find our work useful, please cite as
 
 
 ```
-@inproceedings{chen2023gaia,
+@article{chen2024gaia,
   title={GAIA: Delving into Gradient-based Attribution Abnormality for Out-of-distribution Detection},
-  author={Jinggang Chen, Junjie Li, Xiaoyang Qu, Jianzong Wang, Jiguang Wan, Jing Xiao},
-  booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
-  year={2023}
+  author={Chen, Jinggang and Li, Junjie and Qu, Xiaoyang and Wang, Jianzong and Wan, Jiguang and Xiao, Jing},
+  journal={Advances in Neural Information Processing Systems},
+  volume={36},
+  year={2024}
 }
 ```
 
